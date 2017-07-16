@@ -2,6 +2,7 @@ package autumn.user;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 public class User {
@@ -10,18 +11,30 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "sign_up_time", nullable = false)
+    private Timestamp signUpTime;
+
+    @Column(name = "last_visit_time", nullable = false)
+    private Timestamp lastVisitTime;
+
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String email, String password, Timestamp signUpTime, Timestamp lastVisitTime) {
         this.username = username;
+        this.email = email;
         this.password = password;
+        this.signUpTime = signUpTime;
+        this.lastVisitTime = lastVisitTime;
     }
 
     public Long getId() {
@@ -46,5 +59,34 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Timestamp getSignUpTime() {
+        return signUpTime;
+    }
+
+    public void setSignUpTime(Timestamp signUpTime) {
+        this.signUpTime = signUpTime;
+    }
+
+    public Timestamp getLastVisitTime() {
+        return lastVisitTime;
+    }
+
+    public void setLastVisitTime(Timestamp lastVisitTime) {
+        this.lastVisitTime = lastVisitTime;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("username is : %s", username);
     }
 }

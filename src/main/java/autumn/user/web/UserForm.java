@@ -11,14 +11,18 @@ public class UserForm {
     private String username;
 
     @NotNull
+    private String email;
+
+    @NotNull
     private String password;
 
     public UserForm() {
     }
 
-    public UserForm(User user) {
-        username = user.getUsername();
-        password = user.getPassword();
+    public UserForm(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -35,5 +39,14 @@ public class UserForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
