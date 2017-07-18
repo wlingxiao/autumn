@@ -3,7 +3,9 @@ package autumn.user.support;
 import autumn.user.User;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +14,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -37,6 +41,12 @@ public class UserController {
     @RequestMapping(value = "", method = {GET})
     public List<User> listAllUsers() {
         return userService.listAllUsers();
+    }
+
+    @RequestMapping(value = "/username/{username}")
+    public ResponseEntity<?> checkUsernameExist(@PathVariable("username") String username) {
+        val user = userService.findByUsername(username);
+        return new ResponseEntity(user != null ? FOUND : NOT_FOUND);
     }
 
     private Timestamp now() {
