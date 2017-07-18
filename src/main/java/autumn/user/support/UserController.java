@@ -1,7 +1,6 @@
-package autumn.user.web;
+package autumn.user.support;
 
 import autumn.user.User;
-import autumn.user.support.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

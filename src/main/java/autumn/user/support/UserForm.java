@@ -1,4 +1,4 @@
-package autumn.user.web;
+package autumn.user.support;
 
 
 import autumn.user.User;
