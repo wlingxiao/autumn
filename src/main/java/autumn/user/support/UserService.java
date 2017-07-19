@@ -25,10 +25,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findByUsername(String username) {
+    public User findByUsername(final String username) {
         Assert.notNull(username, "用户名不能为空");
 
         return userRepository.findByUsername(username);
+    }
+
+    public User findByEmail(final String email) {
+        Assert.notNull(email, "邮箱不能为空");
+        return userRepository.findByEmail(email);
     }
 
 }

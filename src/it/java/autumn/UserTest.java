@@ -63,6 +63,18 @@ public class UserTest extends AbstractIntegrationTests {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void testCheckEmailExist() throws Exception {
+        mockMvc.perform(get("/users/email/" + "test@test.com"))
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    public void testCheckEmailNotExist() throws Exception {
+        mockMvc.perform(get("/users/email/" + "test1@test.com"))
+                .andExpect(status().isNotFound());
+    }
+
     @After
     public void tearDown() {
         userRepository.deleteAll();

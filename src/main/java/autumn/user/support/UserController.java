@@ -1,6 +1,7 @@
 package autumn.user.support;
 
 import autumn.user.User;
+import lombok.NonNull;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,12 @@ public class UserController {
     @RequestMapping(value = "/username/{username}")
     public ResponseEntity<?> checkUsernameExist(@PathVariable("username") String username) {
         val user = userService.findByUsername(username);
+        return new ResponseEntity(user != null ? FOUND : NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/email/{email:.+}", method = GET)
+    public ResponseEntity<?> checkEmailExist(@PathVariable("email") String email) {
+        val user = userService.findByEmail(email);
         return new ResponseEntity(user != null ? FOUND : NOT_FOUND);
     }
 
