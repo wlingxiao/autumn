@@ -1,27 +1,34 @@
 package autumn;
 
 import autumn.user.User;
+import autumn.user.support.UserForm;
 import autumn.user.support.UserRepository;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.sql.Timestamp;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserTest extends AbstractIntegrationTests {
 
     private Timestamp now;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
@@ -41,37 +48,37 @@ public class UserTest extends AbstractIntegrationTests {
 
     @Test
     public void testCreateUser() throws Exception {
-        val params = new LinkedMultiValueMap<String, String>();
-        params.add("username", "test_create_user");
-        params.add("email", "test_create_user@test.com");
-        params.add("password", "111111");
+
+        val userForm = new UserForm("test_create_user",
+                "test_create_user@test.com", "111111", "111111");
 
         mockMvc.perform(post("/users")
-                .params(params))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsBytes(userForm)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     public void testCheckUsernameExist() throws Exception {
-        mockMvc.perform(get("/users/username/" + "test"))
+        mockMvc.perform(head("/users/username/" + "test"))
                 .andExpect(status().isFound());
     }
 
     @Test
     public void testCheckUsernameNotExist() throws Exception {
-        mockMvc.perform(get("/users/username/" + "test1"))
+        mockMvc.perform(head("/users/username/" + "test1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void testCheckEmailExist() throws Exception {
-        mockMvc.perform(get("/users/email/" + "test@test.com"))
+        mockMvc.perform(head("/users/email/" + "test@test.com"))
                 .andExpect(status().isFound());
     }
 
     @Test
     public void testCheckEmailNotExist() throws Exception {
-        mockMvc.perform(get("/users/email/" + "test1@test.com"))
+        mockMvc.perform(head("/users/email/" + "test1@test.com"))
                 .andExpect(status().isNotFound());
     }
 
