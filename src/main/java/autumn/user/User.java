@@ -7,20 +7,20 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Data
-@Entity
+@Entity(name = "t_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 20)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 40)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String password;
 
     @Column(name = "sign_up_time", nullable = false)
