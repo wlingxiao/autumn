@@ -3,8 +3,6 @@ package autumn.user.support;
 import autumn.user.User;
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 public class ListUserResponse {
 
