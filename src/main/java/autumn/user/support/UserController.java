@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static autumn.common.DateTimeUtil.now;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -67,10 +67,6 @@ public class UserController {
     public ResponseEntity<?> checkEmailExist(@PathVariable("email") String email) {
         val user = userService.findByEmail(email);
         return new ResponseEntity(user != null ? FOUND : NOT_FOUND);
-    }
-
-    private Timestamp now() {
-        return new Timestamp(System.currentTimeMillis());
     }
 
 }
