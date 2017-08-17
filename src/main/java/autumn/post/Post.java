@@ -21,16 +21,20 @@ public class Post {
     @Column(name = "create_time", nullable = false)
     private Timestamp createTime;
 
+    @Column(name = "last_update_time", nullable = false)
+    private Timestamp lastUpdateTime;
+
     @Column(name = "t_user_id", nullable = false)
     private Long userId;
 
     public Post() {
     }
 
-    public Post(String title, String content, Timestamp createTime, Long userId) {
+    public Post(String title, String content, Timestamp createTime, Timestamp lastUpdateTime, Long userId) {
         this.title = title;
         this.content = content;
         this.createTime = createTime;
+        this.lastUpdateTime = lastUpdateTime;
         this.userId = userId;
     }
 }

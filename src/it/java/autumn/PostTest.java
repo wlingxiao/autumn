@@ -1,6 +1,5 @@
 package autumn;
 
-import autumn.common.DateTimeUtil;
 import autumn.post.Post;
 import autumn.post.support.PostForm;
 import autumn.post.support.PostRepository;
@@ -11,10 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static autumn.common.DateTimeUtil.now;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,7 +30,7 @@ public class PostTest extends AbstractIntegrationTests {
     @Before
     public void setUp() {
         val post = new Post("test_title", "test_content",
-                DateTimeUtil.now(), 1L);
+                now(), now(), 1L);
         post.setId(1L);
         postRepository.saveAndFlush(post);
     }
@@ -44,8 +45,17 @@ public class PostTest extends AbstractIntegrationTests {
     public void testCreatePost() throws Exception {
         val postForm = new PostForm("test_create_post_title", "test_create_post_content");
         mockMvc.perform(post("/posts")
-                    .contentType(APPLICATION_JSON_UTF8)
-                    .content(objectMapper.writeValueAsString(postForm)))
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(postForm)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testUpdatePost() throws Exception {
+        val postForm = new PostForm("update_post_title", "update_post_content");
+        mockMvc.perform(put("/posts" + "/1")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(postForm)))
                 .andExpect(status().isCreated());
     }
 
