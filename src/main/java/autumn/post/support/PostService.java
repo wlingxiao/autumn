@@ -3,9 +3,15 @@ package autumn.post.support;
 import autumn.post.Post;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import static autumn.common.DateTimeUtil.now;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.util.Assert.notNull;
 
 @Service
@@ -37,5 +43,11 @@ public class PostService {
         p.setTitle(post.getTitle());
         p.setLastUpdateTime(now());
         return postRepository.save(p);
+    }
+
+    public Page<Post> loadPostPage(int page, int size) {
+        Sort sort = new Sort(DESC, "lastUpdateTime");
+        Pageable pageable = new PageRequest(page - 1, size, sort);
+        return postRepository.findAll(pageable);
     }
 }

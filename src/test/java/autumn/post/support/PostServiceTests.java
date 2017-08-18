@@ -11,11 +11,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.sql.Time;
 import java.sql.Timestamp;
 
 import static org.mockito.BDDMockito.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PostServiceTests {
@@ -53,5 +58,11 @@ public class PostServiceTests {
         post.setId(1234L);
         postService.update(post);
         verify(postRepository).save((Post) anyObject());
+    }
+
+    @Test
+    public void testLoadPostPage() {
+        postService.loadPostPage(1, 10);
+        verify(postRepository).findAll((Pageable)anyObject());
     }
 }

@@ -7,10 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -35,8 +32,13 @@ public class PostController {
     @ApiOperation(value = "通过 id 获取 Post")
     @RequestMapping(value = "/{postId}", method = {GET})
     public Post loadPostById(@PathVariable Long postId) {
-
         return postService.loadById(postId);
+    }
+
+    @RequestMapping(method = GET)
+    public PageResponse<Post> loadPostPage(@RequestParam("page") int page) {
+        val pageP = postService.loadPostPage(page, 20);
+        return new PageResponse<>(pageP.getTotalElements(), pageP.getContent());
     }
 
     @RequestMapping(method = {POST}, consumes = APPLICATION_JSON_UTF8_VALUE)
