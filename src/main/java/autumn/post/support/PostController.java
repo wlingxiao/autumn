@@ -1,16 +1,20 @@
 package autumn.post.support;
 
 import autumn.common.DateTimeUtil;
+import autumn.common.ObjectsUtil;
 import autumn.post.Post;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -36,8 +40,18 @@ public class PostController {
     }
 
     @RequestMapping(method = GET)
-    public PageResponse<Post> loadPostPage(@RequestParam("page") int page) {
-        val pageP = postService.loadPostPage(page, 20);
+    public PageResponse<Post> loadPostPage(@RequestParam(value = "page", required = false) Integer page,
+                                           @RequestParam(value = "direction", required = false) Integer direction) {
+        Sort.Direction sd = null;
+        if (page == null) {
+            page = 1;
+        }
+        if (direction == null) {
+            sd = Sort.Direction.DESC;
+        } else {
+            sd = ObjectsUtil.equal(1, direction) ? ASC : DESC;
+        }
+        val pageP = postService.loadPostPage(page, 20, sd);
         return new PageResponse<>(pageP.getTotalElements(), pageP.getContent());
     }
 

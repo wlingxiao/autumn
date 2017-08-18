@@ -8,10 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import static autumn.common.DateTimeUtil.now;
-import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.data.domain.Sort.Direction;
 import static org.springframework.util.Assert.notNull;
 
 @Service
@@ -45,8 +44,8 @@ public class PostService {
         return postRepository.save(p);
     }
 
-    public Page<Post> loadPostPage(int page, int size) {
-        Sort sort = new Sort(DESC, "lastUpdateTime");
+    public Page<Post> loadPostPage(int page, int size, Direction direction) {
+        Sort sort = new Sort(direction, "lastUpdateTime");
         Pageable pageable = new PageRequest(page - 1, size, sort);
         return postRepository.findAll(pageable);
     }

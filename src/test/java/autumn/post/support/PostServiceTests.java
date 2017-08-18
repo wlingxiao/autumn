@@ -62,7 +62,7 @@ public class PostServiceTests {
 
     @Test
     public void testLoadPostPage() {
-        postService.loadPostPage(1, 10);
-        verify(postRepository).findAll((Pageable)anyObject());
+        postService.loadPostPage(1, 10, anyObject());
+        verify(postRepository).findAll((Pageable) anyObject());
     }
 }
