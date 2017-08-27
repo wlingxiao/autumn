@@ -1,17 +1,18 @@
 package autumn.daily.support;
 
-import autumn.daily.News;
 import autumn.daily.DailyResponse;
+import autumn.daily.News;
 import autumn.post.support.PageResponse;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/daily")
+@RequestMapping("/dailies")
 public class TitleController {
 
     private TitleService titleService;
@@ -25,15 +26,18 @@ public class TitleController {
     }
 
     @GetMapping(value = "")
-    public PageResponse<DailyResponse> loadPostPage(@RequestParam(value = "page", required = false) Integer page,
+    public PageResponse<DailyResponse> loadPostPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                     @RequestParam(value = "direction", required = false) Integer direction) {
         val pageP = titleService.pageTitle(page, 20, Sort.Direction.DESC);
-        val a = new LinkedList<DailyResponse>();
-        for (val b : pageP.getContent()) {
-            for (val c : b.getStories()) {
-                a.add(new DailyResponse(c.getNewsId() + "", c.getTitle(), null));
-            }
-        }
+        List<DailyResponse> a = pageP.getContent().stream()
+                .flatMap((x) -> {
+                    return x.getStories().stream();
+                }).map((z) -> {
+                    val l = z.getImages().get(0);
+                    val f = "/api/v1/image/" + l.substring(l.indexOf(".com/") + 5);
+                    val news = newsService.loadByNewsId(9095858);
+                    return new DailyResponse(z.getNewsId() + "", z.getTitle(), null, f, news.getTitle());
+                }).collect(Collectors.toList());
         return new PageResponse<>(pageP.getTotalElements(), a.subList(0, 10));
     }
 

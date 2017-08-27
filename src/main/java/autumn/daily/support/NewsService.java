@@ -1,6 +1,7 @@
 package autumn.daily.support;
 
 import autumn.daily.News;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +19,9 @@ public class NewsService {
         return newsRepository.findByNewsId(newsId);
     }
 
+    public News updateSummary(String id, String summary) {
+        val oldNews = newsRepository.findOne(id);
+        oldNews.setSummary(summary);
+        return newsRepository.save(oldNews);
+    }
 }

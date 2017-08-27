@@ -39,4 +39,5 @@ public class News {
 
     private List<String> css;
 
+    private String summary;
 }
