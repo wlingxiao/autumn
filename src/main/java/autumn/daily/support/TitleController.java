@@ -6,6 +6,8 @@ import autumn.post.support.PageResponse;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +21,16 @@ public class TitleController {
 
     private NewsService newsService;
 
+    private DailyPushService dailyPushService;
+
+    private DailyHttpService dailyHttpService;
+
     @Autowired
-    public TitleController(TitleService titleService, NewsService newsService) {
+    public TitleController(TitleService titleService, NewsService newsService, DailyPushService dailyPushService, DailyHttpService dailyHttpService) {
         this.titleService = titleService;
         this.newsService = newsService;
+        this.dailyPushService = dailyPushService;
+        this.dailyHttpService = dailyHttpService;
     }
 
     @GetMapping(value = "")
@@ -42,7 +50,15 @@ public class TitleController {
     }
 
     @GetMapping(value = "/{newsId}")
-    public News loadById(@PathVariable("newsId") Integer newsId) {
-        return newsService.loadByNewsId(newsId);
+    public ResponseEntity<?> loadById(@PathVariable("newsId") Integer newsId) {
+        val news = newsService.loadByNewsId(newsId);
+        if (news == null) {
+            val loadedNews = dailyHttpService.fetchNewsById(newsId.toString());
+            loadedNews.thenAcceptAsync((x) -> {
+                dailyPushService.pushNews(x);
+            });
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(news);
     }
 }
