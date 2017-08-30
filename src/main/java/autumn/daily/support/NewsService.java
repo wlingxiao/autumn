@@ -24,4 +24,10 @@ public class NewsService {
         oldNews.setSummary(summary);
         return newsRepository.save(oldNews);
     }
+
+    public News save(News news) {
+        news.setNewsId(Integer.parseInt(news.getId()));
+        news.setId(null);
+        return newsRepository.save(news);
+    }
 }

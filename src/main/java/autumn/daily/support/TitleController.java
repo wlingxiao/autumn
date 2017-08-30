@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,14 +50,13 @@ public class TitleController {
         return new PageResponse<>(pageP.getTotalElements(), a.subList(0, 10));
     }
 
-    @GetMapping(value = "/{newsId}")
+    @GetMapping(value = "/news/{newsId}")
     public ResponseEntity<?> loadById(@PathVariable("newsId") Integer newsId) {
         val news = newsService.loadByNewsId(newsId);
         if (news == null) {
-            val loadedNews = dailyHttpService.fetchNewsById(newsId.toString());
-            loadedNews.thenAcceptAsync((x) -> {
-                dailyPushService.pushNews(x);
-            });
+            dailyHttpService.fetchNewsById(newsId.toString())
+                    .thenComposeAsync((x) -> CompletableFuture.supplyAsync(() -> newsService.save(x)))
+                    .thenAcceptAsync((x) -> dailyPushService.pushNews(x));
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(news);

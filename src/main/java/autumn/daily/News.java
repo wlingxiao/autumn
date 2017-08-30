@@ -13,6 +13,7 @@ public class News {
 
     @Id
     private String id;
+
     private String body;
 
     @Field("image_source")
