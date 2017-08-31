@@ -1,5 +1,6 @@
 package autumn.daily.support;
 
+import autumn.common.NetUtils;
 import autumn.daily.DailyResponse;
 import autumn.daily.News;
 import autumn.post.support.PageResponse;
@@ -10,9 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static autumn.daily.Constants.BASE_IMAGE_URL;
 
 @RestController
 @RequestMapping("/dailies")
@@ -60,5 +64,12 @@ public class TitleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(news);
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/image/{imageId}")
+    public ResponseEntity<byte[]> loadImage(@PathVariable("imageId") String imageId) throws IOException {
+        return ResponseEntity.ok(NetUtils.fetchImage(BASE_IMAGE_URL + imageId));
     }
 }
