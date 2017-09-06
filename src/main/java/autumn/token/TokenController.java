@@ -1,5 +1,7 @@
 package autumn.token;
 
+import autumn.token.config.JwtTokenHelper;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +18,19 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VAL
 
 @RestController
 @RequestMapping("/token")
+@Slf4j
 public class TokenController {
 
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenHelper jwtTokenHelper;
 
     private UserDetailsService userDetailsService;
 
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    public TokenController(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService,
+    public TokenController(JwtTokenHelper jwtTokenHelper, UserDetailsService userDetailsService,
                            AuthenticationManager authenticationManager) {
-        this.jwtTokenUtil = jwtTokenUtil;
+        this.jwtTokenHelper = jwtTokenHelper;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
     }
@@ -37,6 +40,7 @@ public class TokenController {
      */
     @PostMapping(consumes = APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> createAuthToken(AuthRequest authRequest) throws AuthenticationException {
+        log.debug("获取 token {}", authRequest.toString());
         val authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getUsername(),
@@ -45,7 +49,7 @@ public class TokenController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         val userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        val token = jwtTokenUtil.generateToken(userDetails);
+        val token = jwtTokenHelper.generateToken(userDetails);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 

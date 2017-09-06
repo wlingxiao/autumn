@@ -1,4 +1,4 @@
-package autumn.token;
+package autumn.token.config;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private String tokenHeader;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenHelper jwtTokenUtil;
 
     @Autowired
     private UserDetailsService userDetailsService;

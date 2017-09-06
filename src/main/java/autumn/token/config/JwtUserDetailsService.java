@@ -1,7 +1,8 @@
-package autumn.token;
+package autumn.token.config;
 
 import autumn.user.User;
 import autumn.user.support.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,17 +10,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtUserDetailsServiceImpl implements UserDetailsService {
+@Slf4j
+public class JwtUserDetailsService implements UserDetailsService {
+
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public JwtUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        log.debug("加载的用户名为 {}", s);
         User user = userRepository.findByUsername(s);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", s));
         }
-        return new JwtUser(user.getId(), user.getUsername(), user.getPassword());
+        return new JwtTokenUser(user.getId(), user.getUsername(), user.getPassword());
     }
 }

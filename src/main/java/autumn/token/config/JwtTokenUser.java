@@ -1,4 +1,4 @@
-package autumn.token;
+package autumn.token.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 
-public class JwtUser implements UserDetails {
+public class JwtTokenUser implements UserDetails {
 
     private Long id;
 
@@ -15,7 +15,7 @@ public class JwtUser implements UserDetails {
 
     private String password;
 
-    JwtUser(Long id, String username, String password) {
+    JwtTokenUser(Long id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -38,17 +38,17 @@ public class JwtUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override

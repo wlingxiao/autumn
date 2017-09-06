@@ -2,8 +2,10 @@ package autumn.token;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class AuthRequest {
+class AuthRequest implements Serializable {
 
     private String username;
 
