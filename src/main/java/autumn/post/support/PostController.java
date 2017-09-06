@@ -18,8 +18,6 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Api
 @RestController
@@ -39,7 +37,7 @@ public class PostController {
         return postService.loadById(postId);
     }
 
-    @RequestMapping(method = GET)
+    @GetMapping
     public PageResponse<Post> loadPostPage(@RequestParam(value = "page", required = false) Integer page,
                                            @RequestParam(value = "direction", required = false) Integer direction) {
         Sort.Direction sd = null;
@@ -55,14 +53,14 @@ public class PostController {
         return new PageResponse<>(pageP.getTotalElements(), pageP.getContent());
     }
 
-    @RequestMapping(method = {POST}, consumes = APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> createPost(@Valid @RequestBody PostForm postForm) {
         val post = mapFormToPost(postForm, 1L);
         postService.create(post);
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(value = "/{postId}", method = PUT, consumes = APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/{postId}", consumes = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> updatePost(@Valid @RequestBody PostForm postForm,
                                         @PathVariable Long postId) {
         val post = mapFormToPost(postForm, 1L);
