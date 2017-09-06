@@ -62,7 +62,6 @@ public class PostTest extends AbstractIntegrationTests {
     }
 
     @Test
-    @Ignore
     public void testUpdatePost() throws Exception {
         val postForm = new PostForm("update_post_title", "update_post_content");
         mockMvc.perform(put("/posts" + "/1")
