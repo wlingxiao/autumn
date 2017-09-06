@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
 @RestController
@@ -39,7 +42,7 @@ public class TokenController {
      * 登录，获取 token
      */
     @PostMapping(consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> createAuthToken(AuthRequest authRequest) throws AuthenticationException {
+    public ResponseEntity<?> createAuthToken(AuthRequest authRequest, HttpServletResponse response) throws AuthenticationException {
         log.debug("获取 token {}", authRequest.toString());
         val authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -50,6 +53,7 @@ public class TokenController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         val userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
         val token = jwtTokenHelper.generateToken(userDetails);
+        response.addCookie(new Cookie("Authentication", token));
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
