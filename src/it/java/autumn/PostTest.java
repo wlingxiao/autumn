@@ -5,16 +5,16 @@ import autumn.post.support.PostForm;
 import autumn.post.support.PostRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static autumn.common.DateTimeUtil.now;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostTest extends AbstractIntegrationTests {
@@ -25,18 +25,19 @@ public class PostTest extends AbstractIntegrationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Long postId;
+
     @Before
     public void setUp() {
         val post = new Post("test_title", "test_content",
                 now(), now(), 1L);
-        post.setId(1L);
-        postRepository.saveAndFlush(post);
+        postId = postRepository.saveAndFlush(post).getId();
     }
 
     @Test
     public void testLoadPostById() throws Exception {
-        val mvcResult = mockMvc.perform(get("/posts" + "/1")).andReturn();
-        assertThat(mvcResult.getResponse().getContentAsString(), containsString("test_title"));
+        mockMvc.perform(get("/posts/" + postId))
+                .andExpect(content().string(containsString("test_title")));
     }
 
     @Test
@@ -46,10 +47,8 @@ public class PostTest extends AbstractIntegrationTests {
                     now(), now(), 1L);
             postRepository.saveAndFlush(post);
         }
-        val mvcResult = mockMvc.perform(get("/posts").param("page", "1"))
-                .andReturn();
-        val ret = mvcResult.getResponse().getContentAsString();
-        assertThat(ret, containsString("test_title5"));
+        mockMvc.perform(get("/posts").param("page", "1"))
+                .andExpect(content().string(containsString("test_title5")));
     }
 
     @Test
@@ -62,10 +61,9 @@ public class PostTest extends AbstractIntegrationTests {
     }
 
     @Test
-    @Ignore // TODO 由于 post 的 id 是 Identity，多次操作数据库后id不为，找不到 id 为 1 的 post
     public void testUpdatePost() throws Exception {
         val postForm = new PostForm("update_post_title", "update_post_content");
-        mockMvc.perform(put("/posts" + "/1")
+        mockMvc.perform(put("/posts/" + postId)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(postForm)))
                 .andExpect(status().isCreated());
