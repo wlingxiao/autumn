@@ -38,18 +38,11 @@ public class PostController {
     }
 
     @GetMapping
-    public PageResponse<Post> loadPostPage(@RequestParam(value = "page", required = false) Integer page,
-                                           @RequestParam(value = "direction", required = false) Integer direction) {
-        Sort.Direction sd = null;
+    public PageResponse<Post> loadPostPage(@RequestParam(value = "page", required = false) Integer page) {
         if (page == null) {
             page = 1;
         }
-        if (direction == null) {
-            sd = Sort.Direction.DESC;
-        } else {
-            sd = ObjectsUtil.equal(1, direction) ? ASC : DESC;
-        }
-        val pageP = postService.loadPostPage(page, 20, sd);
+        val pageP = postService.loadPostPage(page, 20, DESC);
         return new PageResponse<>(pageP.getTotalElements(), pageP.getContent());
     }
 
