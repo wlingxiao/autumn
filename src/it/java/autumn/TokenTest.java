@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import java.sql.Timestamp;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class TokenTest extends AbstractIntegrationTests {
@@ -33,7 +33,7 @@ public class TokenTest extends AbstractIntegrationTests {
                 .param("username", "token_test")
                 .param("password", "111111")
         ).andReturn();
-        assertNotNull(ret.getResponse().getCookie("Authentication"));
+        assertThat(ret.getResponse().getCookie("Authentication")).isNotNull();
     }
 
     @After
