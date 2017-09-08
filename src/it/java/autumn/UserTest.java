@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserTest extends AbstractIntegrationTests {
@@ -37,16 +38,14 @@ public class UserTest extends AbstractIntegrationTests {
 
     @Test
     public void testListAllUser() throws Exception {
-        val mvcResult = mockMvc.perform(get("/users")).andReturn();
-        assertThat(mvcResult.getResponse().getContentAsString(), containsString("test@test.com"));
+        mockMvc.perform(get("/users"))
+                .andExpect(content().string(containsString("test@test.com")));
     }
 
     @Test
     public void testCreateUser() throws Exception {
-
         val userForm = new UserForm("test_create_user",
                 "test_create_user@test.com", "111111", "111111");
-
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsBytes(userForm)))
