@@ -30,6 +30,25 @@ public class Post {
     public Post() {
     }
 
+    /**
+     * only for test
+     */
+    public Post(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * only for test
+     */
+    public Post(Long id, String title, String content, Timestamp createTime, Timestamp lastUpdateTime, Long userId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createTime = createTime;
+        this.lastUpdateTime = lastUpdateTime;
+        this.userId = userId;
+    }
+
     public Post(String title, String content, Timestamp createTime, Timestamp lastUpdateTime, Long userId) {
         this.title = title;
         this.content = content;

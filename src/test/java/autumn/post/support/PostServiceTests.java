@@ -2,25 +2,19 @@ package autumn.post.support;
 
 import autumn.post.Post;
 import lombok.val;
-
-import static autumn.common.DateTimeUtil.now;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PostServiceTests {
@@ -30,18 +24,21 @@ public class PostServiceTests {
 
     private PostService postService;
 
+    @Captor
+    private ArgumentCaptor<Post> postCaptor;
+
     @Before
     public void setUp() {
-        Post post = new Post("title", "content", null, null, 1234L);
-        given(postRepository.findById(1234L)).willReturn(post);
+        val post = new Post("title", "content", null, null, 1234L);
+        given(postRepository.findById(anyLong())).willReturn(post);
         postService = new PostService(postRepository);
     }
 
     @Test
     public void testCreatePost() {
-        Post post = new Post("title", "content", null, null, null);
+        val post = new Post("title", "content", null, null, null);
         postService.create(post);
-        verify(postRepository).save((Post) anyObject());
+        verify(postRepository).save(post);
     }
 
     @Test
@@ -51,18 +48,28 @@ public class PostServiceTests {
         verify(postRepository).findById(1234L);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testNotFoundOldPost() {
+        given(postRepository.findById(anyLong())).willReturn(null);
+        postService.update(new Post(anyLong()));
+    }
+
     @Test
     public void testUpdatePost() {
-        Timestamp current = now();
-        Post post = new Post("update_title", "update_content", null, current, null);
-        post.setId(1234L);
-        postService.update(post);
-        verify(postRepository).save((Post) anyObject());
+        val oldPost = new Post(1L, "oldTitle", "oldContent", null, null, 1234L);
+        given(postRepository.findById(1L)).willReturn(oldPost);
+
+        val newPost = new Post(1L, "newTitle", "newContent", null, null, 1234L);
+        postService.update(newPost);
+
+        verify(postRepository).save(postCaptor.capture());
+        assertThat(postCaptor.getValue().getTitle()).isEqualTo("newTitle");
+        assertThat(postCaptor.getValue().getContent()).isEqualTo("newContent");
     }
 
     @Test
     public void testLoadPostPage() {
-        postService.loadPostPage(1, 10, anyObject());
-        verify(postRepository).findAll((Pageable) anyObject());
+        postService.loadPostPage(1, 10, any());
+        verify(postRepository).findAll((Pageable) any());
     }
 }
