@@ -36,9 +36,6 @@ public class DailyControllerTests {
     @Mock
     private NewsService newsService;
 
-    @Mock
-    private DailyHttpService dailyHttpService;
-
     @Test
     public void testLoadPostPage() {
         val title = gson.fromJson(titleStr, Title.class);
@@ -51,7 +48,7 @@ public class DailyControllerTests {
                 .willReturn((long) titles.size());
         given(titleService.pageTitle(eq(1), anyInt(), eq(Sort.Direction.DESC)))
                 .willReturn(titlePage);
-        given(newsService.loadByNewsId(9095858)).willReturn(news);
+        given(newsService.loadByNewsId(news.getNewsId())).willReturn(news);
         val titleController = new DailyController(titleService, newsService, null);
         val responses = titleController.loadPostPage(1);
         assertThat(responses.getCount()).isEqualTo(1);
