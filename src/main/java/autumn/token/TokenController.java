@@ -62,7 +62,7 @@ public class TokenController {
             response.addCookie(new Cookie(getTokenName(), token));
             return new TokenResult(200, token);
         } catch (AuthenticationException e) {
-            log.info("用户名或密码错误", e);
+            log.info("用户名或密码错误", e.getMessage());
             return new Result(400, "用户名或密码错误");
         }
 

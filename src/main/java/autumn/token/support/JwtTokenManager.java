@@ -55,7 +55,7 @@ public class JwtTokenManager implements TokenManager {
             tokenUser.setUsername(username);
             return Optional.of(tokenUser);
         } catch (ClaimJwtException e) {
-            log.warn("parse token failed", e);
+            log.warn("parse token failed", e.getMessage());
             return Optional.empty();
         }
     }
