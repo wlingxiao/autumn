@@ -19,7 +19,7 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("autumn.user.support"))
+                .apis(RequestHandlerSelectors.basePackage("autumn"))
                 .paths(PathSelectors.any())
                 .build();
     }
