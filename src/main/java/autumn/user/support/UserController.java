@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-@Api
+@Api(tags = "用户")
 @RestController
 @RequestMapping("/users")
 public class UserController {
