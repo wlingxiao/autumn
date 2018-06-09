@@ -1,7 +1,7 @@
 package autumn;
 
-import autumn.token.config.JwtAuthenticationTokenFilter;
-import org.springframework.context.annotation.Bean;
+import autumn.token.support.TokenFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,10 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationTokenFilter();
-    }
+    @Autowired
+    private TokenFilter tokenFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -29,15 +27,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
+                .antMatchers("/admin/**").authenticated()
                 .antMatchers("/**").permitAll();
 
         // Custom JWT based security filter
         httpSecurity
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         // disable page caching
         httpSecurity.headers().cacheControl();
-
-
     }
 }

@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,13 +22,13 @@ import java.util.function.Function;
  * jti(JWT ID)：是JWT的唯一标识。
  * <q>http://www.cnblogs.com/davidwang456/p/6478968.html</q>
  */
-@Component
+@Deprecated
 public class JwtTokenHelper {
 
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expire}")
     private Long expiration;
 
     public String getUsernameFromToken(String token) {

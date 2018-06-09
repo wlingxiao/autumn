@@ -1,14 +1,14 @@
-package autumn.token.config;
+package autumn.token;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import autumn.user.User;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Date;
 
-@Deprecated
-class JwtTokenUser implements UserDetails {
+@Data
+public class TokenUser implements UserDetails {
 
     private Long id;
 
@@ -16,10 +16,13 @@ class JwtTokenUser implements UserDetails {
 
     private String password;
 
-    JwtTokenUser(Long id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public TokenUser() {
+    }
+
+    public TokenUser(User user) {
+        id = user.getId();
+        username = user.getUsername();
+        password = user.getPassword();
     }
 
     @Override
@@ -30,11 +33,6 @@ class JwtTokenUser implements UserDetails {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override
@@ -55,10 +53,5 @@ class JwtTokenUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @JsonIgnore
-    public Date getLastPasswordResetDate() {
-        return new Date();
     }
 }
