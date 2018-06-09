@@ -4,6 +4,7 @@ import autumn.common.NetUtils;
 import autumn.daily.Content;
 import autumn.daily.DailyResponse;
 import autumn.post.support.PageResponse;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import static autumn.common.ListUtils.subList;
 import static autumn.daily.Constants.BASE_IMAGE_URL;
 
+@Api(tags = "知乎日报")
 @RestController
 @RequestMapping("/dailies")
 @Slf4j
@@ -28,7 +30,6 @@ public class DailyController {
     private TitleService titleService;
 
     private ContentService contentService;
-
 
     private DailyHttpService dailyHttpService;
 
