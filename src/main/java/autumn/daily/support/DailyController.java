@@ -5,6 +5,7 @@ import autumn.daily.Content;
 import autumn.daily.DailyResponse;
 import autumn.post.support.PageResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,11 @@ import java.util.stream.Collectors;
 
 import static autumn.common.ListUtils.subList;
 import static autumn.daily.Constants.BASE_IMAGE_URL;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @Api(tags = "知乎日报")
 @RestController
-@RequestMapping("/dailies")
+@RequestMapping(value = "/dailies", produces = APPLICATION_JSON_UTF8_VALUE)
 @Slf4j
 public class DailyController {
 
@@ -40,6 +42,7 @@ public class DailyController {
         this.dailyHttpService = dailyHttpService;
     }
 
+    @ApiOperation(value = "分页获取日报标题")
     @GetMapping
     public PageResponse<DailyResponse> loadPostPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         val pageP = titleService.pageTitle(page, 20, Sort.Direction.DESC);
@@ -49,17 +52,10 @@ public class DailyController {
             val news = contentService.findByPubId(title.getPubId());
             return new DailyResponse(title.getId(), title.getTitle(), null, replacedImageUrl, generateSummary(news));
         }).collect(Collectors.toList());
-
-        /*List<DailyResponse> a = pageP.getContent().stream()
-                .flatMap((x) -> x.getStories().stream()).map((z) -> {
-                    val zhihuImageUrl = z.getImages().get(0);
-                    val replacedImageUrl = IMAGE + zhihuImageUrl.substring(zhihuImageUrl.indexOf(".com/") + 5);
-                    val news = newsService.loadByNewsId(z.getNewsId());
-                    return new DailyResponse(z.getNewsId() + "", z.getTitle(), null, replacedImageUrl, generateSummary(news));
-                }).collect(Collectors.toList());*/
         return new PageResponse<>(pageP.getTotalElements(), subList(a, 0, 10));
     }
 
+    @ApiOperation(value = "获取日报详细信息")
     @GetMapping(value = "/{pubId}")
     public ResponseEntity<?> loadById(@PathVariable("pubId") Long pubId) {
         val news = contentService.findByPubId(pubId);
@@ -73,8 +69,8 @@ public class DailyController {
     }
 
 
-    @ResponseBody
-    @RequestMapping("/image/{imageId}")
+    @ApiOperation(value = "获取日报中的图片")
+    @GetMapping("/image/{imageId}")
     public ResponseEntity<byte[]> loadImage(@PathVariable("imageId") String imageId) throws IOException {
         return ResponseEntity.ok(NetUtils.fetchImage(BASE_IMAGE_URL + imageId));
     }

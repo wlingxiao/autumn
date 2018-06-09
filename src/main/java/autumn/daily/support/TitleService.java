@@ -19,9 +19,10 @@ public class TitleService {
     }
 
     public Page<Title> pageTitle(int page, int size, Sort.Direction direction) {
-        Sort sort = new Sort(direction, "date");
+        Sort sort = new Sort(direction, "pubDate");
         Pageable pageable = new PageRequest(page - 1, size, sort);
-        return titleRepository.findAll(pageable);
+        Page<Title> titles = titleRepository.findAll(pageable);
+        return titles;
     }
 
 }
