@@ -1,7 +1,6 @@
 package autumn.daily.support;
 
-import autumn.daily.News;
-import autumn.daily.Title;
+import autumn.daily.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,18 +25,18 @@ public class DailyHttpService {
     }
 
     @Async
-    public CompletableFuture<News> fetchLatest() {
-        return CompletableFuture.completedFuture(restTemplate.getForObject(getLatestNewsUrl(), News.class));
+    public CompletableFuture<Content> fetchLatest() {
+        return CompletableFuture.completedFuture(restTemplate.getForObject(getLatestNewsUrl(), Content.class));
     }
 
     @Async
-    public CompletableFuture<News> fetchNewsByDate(Date date) {
-        return CompletableFuture.completedFuture(restTemplate.getForObject(getNewsDateUrl(date), News.class));
+    public CompletableFuture<Content> fetchNewsByDate(Date date) {
+        return CompletableFuture.completedFuture(restTemplate.getForObject(getNewsDateUrl(date), Content.class));
     }
 
     @Async
-    public CompletableFuture<News> fetchNewsById(String id) {
-        return CompletableFuture.completedFuture(restTemplate.getForObject(getNewsIdUrl(id), News.class));
+    public CompletableFuture<Content> fetchNewsById(String id) {
+        return CompletableFuture.completedFuture(restTemplate.getForObject(getNewsIdUrl(id), Content.class));
     }
 
     private String getLatestNewsUrl() {

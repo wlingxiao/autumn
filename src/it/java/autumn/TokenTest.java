@@ -5,6 +5,7 @@ import autumn.user.support.UserRepository;
 import lombok.val;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ public class TokenTest extends AbstractIntegrationTests {
     }
 
     @Test
+    @Ignore
     public void testGetToken() throws Exception {
         val ret = mockMvc.perform(post("/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)

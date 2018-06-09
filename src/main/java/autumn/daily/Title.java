@@ -1,35 +1,30 @@
 package autumn.daily;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
+import javax.persistence.*;
 
 @Data
-@Document(collection = "daily_titles")
+@Entity(name = "t_title")
 public class Title {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String date;
+    @Column(name = "pub_data")
+    private Integer pubDate;
 
-    private List<Story> stories;
+    private String images;
 
-    @Data
-    public static class Story {
-        private List<String> images;
+    private Short type;
 
-        private Integer type;
+    @Column(name = "pub_id")
+    private Long pubId;
 
-        @Field("id")
-        private Integer newsId;
+    @Column(name = "ga_prefix")
+    private String gaPrefix;
+    
+    private String title;
 
-        @Field("ga_prefix")
-        private String gaPrefix;
-
-        private String title;
-    }
 }

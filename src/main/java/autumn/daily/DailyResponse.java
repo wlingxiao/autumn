@@ -1,11 +1,16 @@
 package autumn.daily;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 public class DailyResponse {
 
-    private String id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    @ApiModelProperty(value = "Id", required = true, dataType = "java.lang.String")
+    private Long id;
 
     private String title;
 
@@ -18,7 +23,7 @@ public class DailyResponse {
     public DailyResponse() {
     }
 
-    public DailyResponse(String id, String title, String content, String image, String summary) {
+    public DailyResponse(Long id, String title, String content, String image, String summary) {
         this.id = id;
         this.title = title;
         this.content = content;

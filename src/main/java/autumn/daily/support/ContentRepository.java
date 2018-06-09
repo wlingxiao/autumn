@@ -1,10 +1,10 @@
 package autumn.daily.support;
 
-import autumn.daily.Title;
+import autumn.daily.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TitleRepository extends JpaRepository<Title, Long> {
-
+public interface ContentRepository extends JpaRepository<Content, Long> {
+    Content findByPubId(Long pubId);
 }
