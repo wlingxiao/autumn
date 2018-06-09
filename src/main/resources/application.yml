@@ -1,0 +1,17 @@
+server:
+  port: 8081
+  context-path: /api/v1
+spring:
+  profiles:
+    active: dev
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+        type: info
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 1000
