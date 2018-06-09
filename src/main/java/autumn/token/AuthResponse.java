@@ -1,10 +1,15 @@
 package autumn.token;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
 class AuthResponse implements Serializable {
-    private final String token;
+
+    @ApiModelProperty(value = "token", required = true)
+    private String token;
 }

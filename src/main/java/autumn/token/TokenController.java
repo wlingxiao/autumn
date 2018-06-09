@@ -1,6 +1,8 @@
 package autumn.token;
 
 import autumn.token.config.JwtTokenHelper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +13,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
+@Api(tags = "token")
 @RestController
 @RequestMapping("/token")
 @Slf4j
@@ -38,11 +42,9 @@ public class TokenController {
         this.authenticationManager = authenticationManager;
     }
 
-    /**
-     * 登录，获取 token
-     */
-    @PostMapping(consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> createAuthToken(AuthRequest authRequest, HttpServletResponse response) throws AuthenticationException {
+    @ApiOperation(value = "创建token")
+    @PostMapping(consumes = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> createAuthToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) throws AuthenticationException {
         log.debug("获取 token {}", authRequest.toString());
         val authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
