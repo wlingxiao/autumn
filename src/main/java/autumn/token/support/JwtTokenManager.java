@@ -46,6 +46,9 @@ public class JwtTokenManager implements TokenManager {
 
     @Override
     public Optional<TokenUser> parseToken(String token) {
+        if (token == null) {
+            return Optional.empty();
+        }
         try {
             val claims = getAllClaimsFromToken(token);
             val userId = claims.get("id");
