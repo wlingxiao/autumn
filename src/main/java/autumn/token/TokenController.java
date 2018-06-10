@@ -3,6 +3,7 @@ package autumn.token;
 import autumn.Result;
 import autumn.token.support.JwtTokenProperties;
 import autumn.token.support.TokenManager;
+import autumn.user.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -55,10 +56,10 @@ public class TokenController {
         response.addCookie(new Cookie("Authentication", token));*/
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(tokenParam.getUsername(), tokenParam.getPassword()));
-            val tokenUser = new TokenUser();
-            tokenUser.setUsername(tokenParam.getUsername());
-            String token = tokenManager.createToken(tokenUser);
+            val authentication =
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(tokenParam.getUsername(), tokenParam.getPassword()));
+            val user = (User) authentication.getPrincipal();
+            String token = tokenManager.createToken(new TokenUser(user.getId(), user.getUsername()));
             response.addCookie(new Cookie(getTokenName(), token));
             return new TokenResult(200, token);
         } catch (AuthenticationException e) {

@@ -1,6 +1,5 @@
 package autumn.user.support;
 
-import autumn.token.TokenUser;
 import autumn.user.User;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -41,12 +41,16 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> findById(final Long id) {
+        return Optional.ofNullable(userRepository.findById(id));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         val user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         }
-        return new TokenUser(user);
+        return user;
     }
 }

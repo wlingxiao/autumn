@@ -1,5 +1,6 @@
 package autumn.token.support;
 
+import autumn.user.support.UserService;
 import lombok.val;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +24,12 @@ public class TokenFilter extends OncePerRequestFilter {
 
     private TokenManager tokenManager;
 
-    public TokenFilter(JwtTokenProperties jwtTokenProperties, TokenManager tokenManager) {
+    private UserService userService;
+
+    public TokenFilter(JwtTokenProperties jwtTokenProperties, TokenManager tokenManager, UserService userService) {
         this.jwtTokenProperties = jwtTokenProperties;
         this.tokenManager = tokenManager;
+        this.userService = userService;
     }
 
     @Override
@@ -40,9 +44,12 @@ public class TokenFilter extends OncePerRequestFilter {
                     .orElse(request.getHeader(getTokenHeader()));
             tokenManager.parseToken(tokenValue)
                     .ifPresent(tokenUser -> {
-                        val authentication = new UsernamePasswordAuthenticationToken(tokenUser, null, tokenUser.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        userService.findById(tokenUser.getId()).ifPresent(user -> {
+                            val authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        });
+
                     });
         }
 

@@ -4,7 +4,9 @@ import autumn.daily.Content;
 import autumn.daily.Title;
 import autumn.daily.support.ContentRepository;
 import autumn.daily.support.TitleRepository;
+import autumn.user.Role;
 import autumn.user.User;
+import autumn.user.support.RoleRepository;
 import autumn.user.support.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -19,24 +21,28 @@ import static autumn.common.DateTimeUtil.now;
 @Profile("dev")
 @Slf4j
 public class StartupRunner implements CommandLineRunner {
+    @Autowired
     private UserRepository userRepository;
 
+    @Autowired
     private TitleRepository titleRepository;
 
+    @Autowired
     private ContentRepository contentRepository;
 
     @Autowired
-    public StartupRunner(UserRepository userRepository, TitleRepository titleRepository, ContentRepository contentRepository) {
-        this.userRepository = userRepository;
-        this.titleRepository = titleRepository;
-        this.contentRepository = contentRepository;
-    }
+    private RoleRepository roleRepository;
 
     @Override
     public void run(String... strings) throws Exception {
         log.debug("insert admin test data");
         User user = new User("admin", "admin@admin.com", "111111", now(), now());
-        userRepository.save(user);
+        val savedUser = userRepository.save(user);
+        val role = new Role();
+        role.setName("ADMIN");
+        role.setUserId(savedUser.getId());
+
+        roleRepository.save(role);
 
         val title = new Title();
         title.setPubDate(20171231);

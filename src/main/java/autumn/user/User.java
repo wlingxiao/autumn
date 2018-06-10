@@ -2,13 +2,17 @@ package autumn.user;
 
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity(name = "t_user")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +33,9 @@ public class User {
     @Column(name = "last_visit_time", nullable = false)
     private Timestamp lastVisitTime;
 
+    @OneToMany(mappedBy = "userId", fetch = FetchType.EAGER)
+    private List<Role> roles;
+
     public User() {
     }
 
@@ -38,5 +45,30 @@ public class User {
         this.password = password;
         this.signUpTime = signUpTime;
         this.lastVisitTime = lastVisitTime;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

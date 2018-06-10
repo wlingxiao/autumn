@@ -27,7 +27,7 @@ public class JwtTokenManager implements TokenManager {
     @Override
     public String createToken(TokenUser tokenUser) {
         val claims = new HashMap<String, Object>();
-        claims.put("id", tokenUser.getId());
+        claims.put("id", tokenUser.getId().toString());
         claims.put("username", tokenUser.getUsername());
         return doCreateToken(claims, tokenUser.getUsername());
     }
@@ -48,10 +48,10 @@ public class JwtTokenManager implements TokenManager {
     public Optional<TokenUser> parseToken(String token) {
         try {
             val claims = getAllClaimsFromToken(token);
-            val userId = claims.get("id", Long.class);
+            val userId = claims.get("id");
             val username = claims.get("username", String.class);
             val tokenUser = new TokenUser();
-            tokenUser.setId(userId);
+            tokenUser.setId(Long.valueOf(String.valueOf(userId)));
             tokenUser.setUsername(username);
             return Optional.of(tokenUser);
         } catch (ClaimJwtException e) {

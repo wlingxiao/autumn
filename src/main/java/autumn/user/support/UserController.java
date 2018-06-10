@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 
 @Api(tags = "用户")
 @RestController
-@RequestMapping(value = "/users", produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/admin/users", produces = APPLICATION_JSON_UTF8_VALUE)
 public class UserController {
 
     private UserService userService;
