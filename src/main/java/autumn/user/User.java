@@ -33,18 +33,22 @@ public class User implements UserDetails {
     @Column(name = "last_visit_time", nullable = false)
     private Timestamp lastVisitTime;
 
+    @Column(nullable = false)
+    private Short state;
+
     @OneToMany(mappedBy = "userId", fetch = FetchType.EAGER)
     private List<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String email, String password, Timestamp signUpTime, Timestamp lastVisitTime) {
+    public User(String username, String email, String password, Timestamp signUpTime, Timestamp lastVisitTime, Short state) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.signUpTime = signUpTime;
         this.lastVisitTime = lastVisitTime;
+        this.state = state;
     }
 
     @Override

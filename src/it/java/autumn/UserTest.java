@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import java.sql.Timestamp;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +28,7 @@ public class UserTest extends AbstractIntegrationTests {
     @Before
     public void setUp() {
         now = new Timestamp(System.currentTimeMillis());
-        val user = new User("test", "test@test.com", "111111", now, now);
+        val user = new User("test", "test@test.com", "111111", now, now, (short) 1);
         userRepository.save(user);
     }
 

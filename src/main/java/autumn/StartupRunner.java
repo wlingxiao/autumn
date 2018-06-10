@@ -36,7 +36,7 @@ public class StartupRunner implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
         log.debug("insert admin test data");
-        User user = new User("admin", "admin@admin.com", "111111", now(), now());
+        User user = new User("admin", "admin@admin.com", "111111", now(), now(), (short) 1);
         val savedUser = userRepository.save(user);
         val role = new Role();
         role.setName("ADMIN");

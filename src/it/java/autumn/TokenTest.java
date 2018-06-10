@@ -23,7 +23,7 @@ public class TokenTest extends AbstractIntegrationTests {
     @Before
     public void setUp() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        val user = new User("token_test", "token_test@test.com", "111111", now, now);
+        val user = new User("token_test", "token_test@test.com", "111111", now, now, (short) 1);
         userRepository.save(user);
     }
 
